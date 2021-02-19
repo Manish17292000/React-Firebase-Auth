@@ -1,7 +1,9 @@
 import React, { useContext, useState, useEffect } from "react"
 import { auth } from "../firebase"
-
+import firebase from "firebase/app"
 const AuthContext = React.createContext()
+
+
 
 export function useAuth() {
   return useContext(AuthContext)
@@ -18,6 +20,25 @@ export function AuthProvider({ children }) {
   function login(email, password) {
     return auth.signInWithEmailAndPassword(email, password)
   }
+
+  function loginViaGoogle() {
+    var provider = new firebase.auth.GoogleAuthProvider();
+    return auth.signInWithPopup(provider)
+  }
+
+  function loginViaPhone(phone) {
+    let recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container');
+    // let recaptcha = new firebase.auth.RecaptchaVerifier('recaptcha')
+    // firebase.auth().signInWithPhoneNumber(phone).then(function(e){
+    //   let code = prompt('Enter OTP')
+    //   e.confirm(code).then(function(result){
+    //     console.log(result.user);
+    //   })
+    // })
+  }
+  
+
+  
 
   function logout() {
     return auth.signOut()
@@ -47,6 +68,8 @@ export function AuthProvider({ children }) {
   const value = {
     currentUser,
     login,
+    loginViaGoogle,
+    loginViaPhone,
     signup,
     logout,
     resetPassword,
@@ -60,3 +83,13 @@ export function AuthProvider({ children }) {
     </AuthContext.Provider>
   )
 }
+
+
+
+
+
+
+
+
+
+
